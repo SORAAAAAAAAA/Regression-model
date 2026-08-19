@@ -33,12 +33,9 @@ def feature_engineering(df : pd.DataFrame, output_path: str) -> pd.DataFrame:
         "fourth & above owner": 4,
     }
     df["owner_priority"] = df["owner"].map(owner_map).fillna(0).astype(int)
-    
-    # Create new features: "brand" and "model" based on the "name" column
-    df["brand"] = df["name"].apply(lambda row: row.split(maxsplit=1)[0] if isinstance(row, str) else None)
         
     # drop the original "name" and "year" columns as they are no longer needed
-    df.drop(["name", "year"], axis=1)
+    df = df.drop(["name", "year", "fuel", "seller_type", "transmission", "owner"], axis=1)
     
     # Save the engineered dataframe to a new CSV file
     df.to_csv(output_path, index=False)

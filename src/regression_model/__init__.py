@@ -8,19 +8,14 @@ import numpy as np
 from pathlib import Path
 from typing import TypedDict
 
-class split_data_object(TypedDict):
-    X_train: pd.DataFrame
-    X_test: pd.DataFrame
-    y_train: pd.Series
-    y_test: pd.Series
 
-def split_data(df: pd.DataFrame) -> split_data_object:
+def split_data(df: pd.DataFrame):
     # Split the data into features and target variable
     X = df.drop("selling_price", axis=1)
     y = df["selling_price"]
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    return {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test}
+    return X_train, X_test, y_train, y_test
 
 def train_model(X_train, y_train):
     # Initialize the Linear Regression model
@@ -56,11 +51,11 @@ def main() -> None:
     # Perform feature engineering on the transformed data and save it to a new CSV file
     engineered_data_path = "src/data/processed_data/engineered/engineered_vehicle_data.csv"
     print("Performing feature engineering...")
-    feature_engineering(df, engineered_data_path)
+    df = feature_engineering(df, engineered_data_path)
     print("Successfully performed feature engineering and saved to:", engineered_data_path)
     
     print("Splitting data into training and testing sets...")
-    X_train, X_test, y_train, y_test = split_data(df)
+    X_train, X_test, y_train, y_test  = split_data(df)
     
     print("Training the model...")
     model = train_model(X_train, y_train)
@@ -73,8 +68,8 @@ def main() -> None:
     
     print("--- Model Performance Metrics ---")
     print(f"R-squared (R2): {r2:.4f}")
-    print(f"Mean Absolute Error (MAE): PHP {mae:,.2f}")
-    print(f"Root Mean Squared Error (RMSE): PHP {rmse:,.2f}\n")
+    print(f"Mean Absolute Error (MAE): {mae:,.2f}")
+    print(f"Root Mean Squared Error (RMSE): {rmse:,.2f}\n")
     
     
     
